@@ -1,0 +1,28 @@
+
+body { margin: 0; padding: 0; }
+
+canvas{
+  /* border:1px solid red; */
+  /* height: 70%;
+  width: 50%; */
+}
+.row{
+  display: flex       
+}
+
+
+.chart {
+  /* margin-left : 25%;  */
+  margin: 0 auto; 
+  width:700px;
+  height: max-content;
+  background-color: black;
+  }
+
+.input-area {
+  
+  margin-left : 35%; 
+  margin-top: 10%;
+  /* margin: 0 auto;  */
+  width:700px;
+  }
