@@ -3,16 +3,21 @@ const ctx1 = document.getElementById('gcpChart').getContext('2d');
 const data1 = {
 datasets: [
   {
-    label: 'GCP',
+    label: 'A地域@GCP',
     cubicInterpolationMode: 'monotone',
     borderColor: 'green',
-    data: []
+    data: [],
+    datalabels: {
+      labels: {
+        title: 'A地域@GCP'
+      }
+    }
   },
   {
-    label: 'Global',
+    label: '全体の発注数',
     cubicInterpolationMode: 'monotone',
     // borderDash: [8, 4],
-    borderColor: 'white',
+    borderColor: 'gray',
     data: []
   }  
 ]
@@ -25,16 +30,20 @@ const gcpcount =  await fetch('/load?cloud=' + 'gcp', {method:'GET', mode: "cors
 // console.log("Requesting " + period + " clients ," + localLog);
 chart.data.datasets[0].data.push({
     x: now,
+    // y: globalcount
     y: gcpcount
   });
 chart.data.datasets[1].data.push({
     x: now,
     y: globalcount
   });
+// chart.options.plugins.annotation.annotations.line.value = gcpcount;
+// chart.options.plugins.annotation.annotations.line.label.content = 'A地域@GCPの価格: ' + gcpcount;
 };
 
 
 new Chart(ctx1, {
+    plugins: [ChartDataLabels],
     type: 'line',
     data: data1,
     options: {
@@ -51,15 +60,45 @@ new Chart(ctx1, {
         y: {
           title: {
             display: true,
-            text: 'Value'
+            text: '価格 ( 円 )'
           },
-          max: 100,
+          max: 200,
           grace: '20%',
           beginAtZero: true          
         }
       },
       interaction: {
         intersect: false
+      },
+      plugins: {
+        datalabels: {
+          backgroundColor: context => context.dataset.borderColor,
+          padding: 4,
+          borderRadius: 4,
+          clip: true,
+          color: 'white',
+          font: {
+            weight: 'bold'
+          },
+          formatter: value => value.y
+        },
+        // annotation: {
+        //   annotations: {
+        //     line: {
+        //       drawTime: 'afterDatasetsDraw',
+        //       type: 'line',
+        //       scaleID: 'y',
+        //       value: 10,
+        //       borderColor: 'Green',
+        //       borderWidth: 5,
+        //       label: {
+        //         backgroundColor: 'Green',
+        //         content: 'GCP',
+        //         enabled: true
+        //       }
+        //     }
+        //   }
+        // }        
       }
     }
 });

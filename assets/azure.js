@@ -3,16 +3,21 @@ const ctx3 = document.getElementById('azureChart').getContext('2d');
 const data3 = {
 datasets: [
   {
-    label: 'Azure',
+    label: 'C地域@Azure',
     cubicInterpolationMode: 'monotone',
     borderColor: 'blue',
-    data: []
+    data: [],
+    datalabels: {
+      labels: {
+        title: 'C地域'
+      }
+    }
   },
   {
-    label: 'Global',
+    label: '全体の発注数',
     cubicInterpolationMode: 'monotone',
     // borderDash: [8, 4],
-    borderColor: 'white',
+    borderColor: 'gray',
     data: []
   }
 
@@ -26,16 +31,20 @@ const azurecount =  await fetch('/load?cloud=' + 'azure', {method:'GET', mode: "
 // console.log("Requesting " + period + " clients ," + localLog);
 chart.data.datasets[0].data.push({
     x: now,
+    // y: globalcount
     y: azurecount
   });
 chart.data.datasets[1].data.push({
     x: now,
     y: globalcount
   });
+// chart.options.plugins.annotation.annotations.line.value = azurecount;
+// chart.options.plugins.annotation.annotations.line.label.content = 'C地域@Azureの価格: ' + azurecount;
 };
 
 
 new Chart(ctx3, {
+    plugins: [ChartDataLabels],
     type: 'line',
     data: data3,
     options: {
@@ -52,15 +61,45 @@ new Chart(ctx3, {
         y: {
           title: {
             display: true,
-            text: 'Value'
+            text: '価格 ( 円 )'
           },
-          max: 100,
+          max: 200,
           grace: '20%',
           beginAtZero: true
         }
       },
       interaction: {
         intersect: false
+      },
+      plugins: {
+        datalabels: {
+          backgroundColor: context => context.dataset.borderColor,
+          padding: 4,
+          borderRadius: 4,
+          clip: true,
+          color: 'white',
+          font: {
+            weight: 'bold'
+          },
+          formatter: value => value.y
+        },
+        // annotation: {
+        //   annotations: {
+        //     line: {
+        //       drawTime: 'afterDatasetsDraw',
+        //       type: 'line',
+        //       scaleID: 'y',
+        //       value: 10,
+        //       borderColor: 'Blue',
+        //       borderWidth: 5,
+        //       label: {
+        //         backgroundColor: 'Blue',
+        //         content: 'Azure',
+        //         enabled: true
+        //       }
+        //     }
+        //   }
+        // }
       }
     }
 });

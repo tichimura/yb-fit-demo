@@ -3,39 +3,48 @@ const ctx2 = document.getElementById('awsChart').getContext('2d');
 const data2 = {
 datasets: [
   {
-    label: 'AWS',
+    label: 'B地域@AWS',
     cubicInterpolationMode: 'monotone',
     borderColor: 'orange',
-    data: []
+    data: [],
+    datalabels: {
+      labels: {
+        title: 'B地域@AWS'
+      }
+    }
   },
   {
-    label: 'Global',
+    label: '全体の発注数',
     cubicInterpolationMode: 'monotone',
     // borderDash: [8, 4],
-    borderColor: 'white',
+    borderColor: 'gray',
     data: []
   }
 
 ]
 };
 
-const onRefresh2 = async chart2 => {
+const onRefresh2 = async chart => {
 const now = Date.now();  
 const globalcount =  await fetch('/load?cloud=' + 'global', {method:'GET', mode: "cors"}).then(response => response.text());
 const awscount =  await fetch('/load?cloud=' + 'aws', {method:'GET', mode: "cors"}).then(response => response.text());
 // console.log("Requesting " + period + " clients ," + localLog);
-chart2.data.datasets[0].data.push({
+chart.data.datasets[0].data.push({
     x: now,
+    // y: globalcount
     y: awscount
   });
-chart2.data.datasets[1].data.push({
+chart.data.datasets[1].data.push({
     x: now,
     y: globalcount
   });
+// chart.options.plugins.annotation.annotations.line.value = awscount;
+// chart.options.plugins.annotation.annotations.line.label.content = 'B地域@AWSの価格: ' + awscount;
 };
 
 
 new Chart(ctx2, {
+    plugins: [ChartDataLabels],
     type: 'line',
     data: data2,
     options: {
@@ -52,15 +61,45 @@ new Chart(ctx2, {
         y: {
           title: {
             display: true,
-            text: 'Value'
+            text: '価格 ( 円 )'
           },
-          max: 100,
+          max: 200,
           grace: '20%',
           beginAtZero: true          
         }
       },
       interaction: {
         intersect: false
+      },
+      plugins: {
+        datalabels: {
+          backgroundColor: context => context.dataset.borderColor,
+          padding: 4,
+          borderRadius: 4,
+          clip: true,
+          color: 'white',
+          font: {
+            weight: 'bold'
+          },
+          formatter: value => value.y
+        },
+        // annotation: {
+        //   annotations: {
+        //     line: {
+        //       drawTime: 'afterDatasetsDraw',
+        //       type: 'line',
+        //       scaleID: 'y',
+        //       value: 10,
+        //       borderColor: 'Orange',
+        //       borderWidth: 5,
+        //       label: {
+        //         backgroundColor: 'Orange',
+        //         content: 'AWS',
+        //         enabled: true
+        //       }
+        //     }
+        //   }
+        // }
       }
     }
 });
