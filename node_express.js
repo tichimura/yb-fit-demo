@@ -67,7 +67,7 @@ app.route('/load')
     var values;
 
     // await client.query('SELECT amount FROM ' + req.query.cloud + ' where user_id = 100').then(results => {
-    await client.query("SELECT count(account_id) FROM " + req.query.cloud + " where created_at > CURRENT_TIMESTAMP - INTERVAL \'60 MINUTES\'").then(results => {
+    await client.query("SELECT count(account_id) FROM " + req.query.cloud + " where created_at > CURRENT_TIMESTAMP - INTERVAL \'1 MINUTES\'").then(results => {
 
       if(results.rowCount == 0 ){
         values = '0';
