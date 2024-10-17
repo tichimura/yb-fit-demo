@@ -61,7 +61,7 @@ new Chart(ctx2, {
         y: {
           title: {
             display: true,
-            text: '価格 ( 円 )'
+            text: '発注数'
           },
           max: 200,
           grace: '20%',
