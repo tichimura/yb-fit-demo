@@ -63,7 +63,7 @@ new Chart(ctx2, {
             display: true,
             text: '発注数'
           },
-          max: 200,
+          // max: 200,
           grace: '20%',
           beginAtZero: true          
         }
